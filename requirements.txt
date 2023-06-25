@@ -39,7 +39,7 @@ python-dateutil==2.8.2
 python-dotenv
 python-gitlab==3.15.0
 python-semantic-release==7.33.2
-readme-renderer==40.0
+readme-renderer
 realtime==1.0.0
 requests-toolbelt==1.0.0
 requests==2.31.0
