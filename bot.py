@@ -18,8 +18,8 @@ TOKEN = os.getenv("DC_TOKEN")
 app = FastAPI()
 # Bot
 intents = discord.Intents.default()  # Ask for permission
-intents.message_content = True
-intents.members = True
+# intents.message_content = True
+# intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
