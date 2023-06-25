@@ -6,7 +6,7 @@ import os
 from fastapi import FastAPI  # I just want to use template on deta
 from cogs.Task import Task
 from cogs.User import User
-from cogs.Track import Track
+# from cogs.Track import Track
 from cogs.Group import Group
 
 # Load parameters
@@ -47,7 +47,7 @@ async def run():
     try:
         await bot.add_cog(User(bot))
         await bot.add_cog(Task(bot))
-        await bot.add_cog(Track(bot))
+        # await bot.add_cog(Track(bot))
         await bot.add_cog(Group(bot))
         await bot.start(TOKEN)
     except KeyboardInterrupt:
