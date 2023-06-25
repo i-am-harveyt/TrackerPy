@@ -287,6 +287,12 @@ requires_python = ">=3.7"
 summary = "Core utilities for Python packages"
 
 [[package]]
+name = "pip"
+version = "23.1.2"
+requires_python = ">=3.7"
+summary = "The PyPA recommended tool for installing Python packages."
+
+[[package]]
 name = "pkginfo"
 version = "1.9.6"
 requires_python = ">=3.6"
@@ -608,7 +614,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 lock_version = "4.2"
 cross_platform = true
 groups = ["default"]
-content_hash = "sha256:17f459463da3c378e7a47876f81ce3a923cb3d1b3d545c9098478dc86b5e2a3a"
+content_hash = "sha256:bc8184c09ebbdacba8b4923f087a60f2643f4eb15e36c8addb652a626c78b01a"
 
 [metadata.files]
 "aiohttp 3.8.4" = [
@@ -1131,6 +1137,10 @@ content_hash = "sha256:17f459463da3c378e7a47876f81ce3a923cb3d1b3d545c9098478dc86
 "packaging 23.1" = [
     {url = "https://files.pythonhosted.org/packages/ab/c3/57f0601a2d4fe15de7a553c00adbc901425661bf048f2a22dfc500caf121/packaging-23.1-py3-none-any.whl", hash = "sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61"},
     {url = "https://files.pythonhosted.org/packages/b9/6c/7c6658d258d7971c5eb0d9b69fa9265879ec9a9158031206d47800ae2213/packaging-23.1.tar.gz", hash = "sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f"},
+]
+"pip 23.1.2" = [
+    {url = "https://files.pythonhosted.org/packages/08/e3/57d4c24a050aa0bcca46b2920bff40847db79535dc78141eb83581a52eb8/pip-23.1.2-py3-none-any.whl", hash = "sha256:3ef6ac33239e4027d9a5598a381b9d30880a1477e50039db2eac6e8a8f6d1b18"},
+    {url = "https://files.pythonhosted.org/packages/fa/ee/74ff76da0ab649eec7581233daeb43d8aa35383d8f75317b2ab3b80c922f/pip-23.1.2.tar.gz", hash = "sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"},
 ]
 "pkginfo 1.9.6" = [
     {url = "https://files.pythonhosted.org/packages/b3/f2/6e95c86a23a30fa205ea6303a524b20cbae27fbee69216377e3d95266406/pkginfo-1.9.6-py3-none-any.whl", hash = "sha256:4b7a555a6d5a22169fcc9cf7bfd78d296b0361adad412a346c1226849af5e546"},
