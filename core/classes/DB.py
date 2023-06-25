@@ -43,7 +43,7 @@ class DataBase():
     def update(self, table: str = None,
                name: str = None,
                key: str = None,
-               val: str | bool = None):
+               val: str = None):
         if table is None or name is None or key is None or val is None:
             return
         self.supabase.table(table)\
