@@ -1,5 +1,5 @@
-aiohttp==3.8.4
-aiosignal==1.3.1
+aiohttp==3.7.0
+iosignal==1.3.1
 anyio==3.7.0
 async-timeout==4.0.2
 attrs==23.1.0
@@ -11,7 +11,7 @@ click==8.1.3
 colorama==0.4.6
 deprecation==2.1.0
 discord-py
-discord==2.3.0
+discord==2.0.0
 docutils==0.20.1
 dotty-dict==1.3.1
 fastapi==0.98.0
@@ -38,7 +38,7 @@ Pygments==2.15.1
 python-dateutil==2.8.2
 python-dotenv
 python-gitlab==3.15.0
-python-semantic-release==7.33.2
+python-semantic-release==7.32.1
 readme-renderer
 realtime
 requests-toolbelt==1.0.0
@@ -49,7 +49,7 @@ six==1.16.0
 smmap==5.0.0
 sniffio==1.3.0
 starlette==0.27.0
-storage3
+storage3==0.3.5
 StrEnum==0.4.10
 supabase
 supafunc==0.2.2
