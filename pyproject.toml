@@ -1,0 +1,17 @@
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "i-am-harveyt", email = "haotingtong30@gmail.com"},
+]
+dependencies = [
+    "discord>=2.3.0",
+    "supabase>=1.0.3",
+    "uvicorn>=0.22.0",
+    "python-dotenv>=1.0.0",
+    "Fastapi>=0.98.0",
+]
+requires-python = ">=3.11"
+license = {text = "MIT"}
