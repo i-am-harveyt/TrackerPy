@@ -33,7 +33,7 @@ The user can be joined into a group, so the task assign will applied to all memb
 **Assign task to group**
 
 ```
-!group list <group-name>
+!group assign <group-name>
 <task1>
 <task2>
 ...
