@@ -1,0 +1,83 @@
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "i-am-harveyt", email = "haotingtong30@gmail.com"},
+]
+dependencies = [
+    "aiohttp",
+    "aiosignal",
+    "anyio",
+    "async-timeout",
+    "attrs",
+    "bleach",
+    "certifi",
+    "charset-normalizer",
+    "click-log",
+    "click",
+    "colorama",
+    "deprecation",
+    "discord-py",
+    "discord>=2.3.1",
+    "docutils",
+    "dotty-dict",
+    "fastapi>=0.98.0",
+    "frozenlist",
+    "gitdb",
+    "GitPython",
+    "gotrue",
+    "h11",
+    "httpcore",
+    "httpx",
+    "idna",
+    "importlib-metadata",
+    "invoke",
+    "jaraco-classes",
+    "keyring",
+    "more-itertools",
+    "multidict",
+    "packaging",
+    "pip",
+    "pkginfo",
+    "postgrest",
+    "pydantic",
+    "Pygments",
+    "python-dateutil",
+    "python-dotenv>=1.0.0",
+    "python-gitlab",
+    "python-semantic-release",
+    "readme-renderer",
+    "realtime",
+    "requests-toolbelt",
+    "requests>=2.31.0",
+    "rfc3986",
+    "schedule",
+    "semver",
+    "six",
+    "smmap",
+    "sniffio",
+    "starlette",
+    "storage3",
+    "StrEnum",
+    "supabase>=1.0.3",
+    "supafunc",
+    "tomlkit",
+    "tqdm",
+    "twine",
+    "typing-extensions",
+    "urllib3",
+    "uvicorn",
+    "webencodings",
+    "websockets",
+    "wheel",
+    "yarl",
+    "zipp",
+]
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

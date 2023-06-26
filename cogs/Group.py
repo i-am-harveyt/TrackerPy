@@ -1,5 +1,6 @@
 from discord.ext import commands
-from core.classes.DB import DataBase
+from supabase import create_client, Client
+import os
 import hashlib
 
 
@@ -10,7 +11,9 @@ def get_hash(string: str):
 class Group(commands.Cog, name='Group'):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = DataBase()
+        self.URL = os.getenv("SUPABASE_URL")
+        self.API_KEY = os.getenv("SUPABASE_KEY")
+        self.supabase: Client = create_client(self.URL, self.API_KEY)
 
     @commands.group()
     async def group(self, ctx: commands.Context):
@@ -19,10 +22,7 @@ class Group(commands.Cog, name='Group'):
 
     @group.command(name="list")
     async def list(self, ctx: commands.Context):
-        res = self.db.fetch(
-            table='group',
-            col="group_name"
-        )
+        res = self.supabase.table('group').select('group_name').execute()
         names = set([e['group_name'] for e in res.data])
         cnt, out = 1, ""
         for name in names:
@@ -39,10 +39,11 @@ class Group(commands.Cog, name='Group'):
 
         # query
         hashed = get_hash(f'{ctx.author.id}')
-        self.db.insert('group', {
-            'group_name': f"{group_name}",
-            'user_id': f"{hashed}",
-        })
+        self.supabase.table('group')\
+            .insert({
+                'group_name': f"{group_name}",
+                'user_id': f"{hashed}",
+            })
         await ctx.send(f"{ctx.author.name} joined {group_name}!")
 
     @group.command(name="leave")
@@ -59,10 +60,11 @@ class Group(commands.Cog, name='Group'):
         hashed = get_hash(f"{ctx.author.id}")
 
         # query
-        self.db.delete('group', {
-            group_name,
-            f"{hashed}",
-        })
+        self.supabase.table('group')\
+            .delete().match({
+                'group_name': group_name,
+                'user_id': f"{hashed}"
+            })
 
     @group.command(name="assign")
     async def assign(self, ctx: commands.Context):
@@ -75,19 +77,19 @@ class Group(commands.Cog, name='Group'):
 
         # insert into db
         group_name = ' '.join(lines[0].split(' ')[2:]).strip()
-        res = self.db.fetch_eq(
-            table='group',
-            key='group_name',
-            val=group_name,
-        )
-        user_ids = [e['user_id'] for e in res.data]
+        res = self.supabase.table('group')\
+            .select('*')\
+            .match({'group_name': group_name})\
+            .execute()
+        user_ids = [e['user_id'] for e in res.data]  # id is already hashed
         names = lines[1:]
         for user_id in user_ids:
+            insert_data = []
             for name in names:
-                self.db.insert(
-                    'tasks',
-                    {
-                        'user_id': f"{user_id}",
-                        'task_name': f"{name}",
-                    })
+                insert_data.append({
+                    'user_id': f"{user_id}",
+                    'task_name': f"{name}",
+                })
+            self.supabase.table('tasks')\
+                .insert(insert_data).execute()
         await ctx.send(f"{group_name} assigned!")
