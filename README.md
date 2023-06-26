@@ -113,3 +113,38 @@ Oh my god, my favorite part(what?)
 ```
 !card <leetcode-username>
 ```
+
+## How to run this app
+
+1. Fill in those tokens, urls, keys in `.env_template`
+2. Rename `.env_template` to `.env`
+3. Setup supabase
+
+```
+create table
+  public.group (
+    id uuid not null default gen_random_uuid (),
+    group_name character varying null,
+    user_id character varying null,
+    join_at timestamp with time zone null default now(),
+    constraint group_pkey primary key (id)
+  ) tablespace pg_default;
+create table
+  public.archived (
+    id uuid not null default gen_random_uuid (),
+    archived_at timestamp with time zone null default now(),
+    user_id character varying null,
+    task_name character varying null,
+    done boolean null default false,
+    constraint archived_pkey primary key (id)
+  ) tablespace pg_default;
+create table
+  public.tasks (
+    id uuid not null default gen_random_uuid (),
+    user_id character varying null,
+    task_name character varying null,
+    created_at timestamp with time zone null default now(),
+    done boolean null default false,
+    constraint tasks_pkey primary key (id)
+  ) tablespace pg_default;
+```
