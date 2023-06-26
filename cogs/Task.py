@@ -1,5 +1,10 @@
 from discord.ext import commands
 from core.classes.DB import DataBase
+import hashlib
+
+
+def get_hash(string: str):
+    return hashlib.sha256(string.encode('utf-8')).hexdigest()
 
 
 class Task(commands.Cog, name='Task'):
@@ -25,8 +30,9 @@ class Task(commands.Cog, name='Task'):
 
         # insert into db
         for name in names:
+            hashed = get_hash(f'{ctx.author.id}')
             self.db.insert('tasks', {
-                'user_id': f"{ctx.author.id}",
+                'user_id': f"{hashed}",
                 'task_name': f"{name}",
             })
         await self.display_user(ctx)
@@ -91,9 +97,10 @@ class Task(commands.Cog, name='Task'):
             return
 
         # get task from table: task
+        hashed = get_hash(f'{ctx.author.id}')
         tasks = self.db.fetch_eq(
             table='tasks',
-            key='user_id', val=ctx.author.id).data
+            key='user_id', val=hashed).data
         for task in tasks:
             for name in names:
                 if name != task['task_name']:
@@ -125,7 +132,8 @@ class Task(commands.Cog, name='Task'):
             if user.name == "LeetcodeTrackerPyBot":
                 continue
             out += f"## {user.name}\n"
-            res = self.db.fetch_eq(table='tasks', key='user_id', val=user.id)
+            hashed = get_hash(f'{user.id}')
+            res = self.db.fetch_eq(table='tasks', key='user_id', val=hashed)
             tasks = res.data
             if len(tasks) == 0:
                 out += "Jobs Done! Great Job! :partying_face:\n"
@@ -146,12 +154,10 @@ class Task(commands.Cog, name='Task'):
     async def display_archived(self, ctx: commands.Context):
         await self.display_user(ctx, 'archived')
 
-    @display.command(name='7d')
-    async def display_7day(self, ctx: commands.Context):
-        pass
-
     async def display_user(self, ctx: commands.Context, table: str = 'tasks'):
-        res = self.db.fetch_eq(table=table, key='user_id', val=ctx.author.id)
+        hashed = get_hash(f'{ctx.author.id}')
+        res = self.db.fetch_eq(table=table, key='user_id',
+                               val=hashed)
         tasks = res.data
         if len(tasks) == 0:
             await ctx.send("Jobs Done! Great Job!")

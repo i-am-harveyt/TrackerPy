@@ -1,5 +1,10 @@
 from discord.ext import commands
 from core.classes.DB import DataBase
+import hashlib
+
+
+def get_hash(string: str):
+    return hashlib.sha256(string.encode('utf-8')).hexdigest()
 
 
 class Group(commands.Cog, name='Group'):
@@ -33,9 +38,10 @@ class Group(commands.Cog, name='Group'):
         group_name = ' '.join(lines[0].split(' ')[2:]).strip()
 
         # query
+        hashed = get_hash(f'{ctx.author.id}')
         self.db.insert('group', {
             'group_name': f"{group_name}",
-            'user_id': f"{ctx.author.id}",
+            'user_id': f"{hashed}",
         })
         await ctx.send(f"{ctx.author.name} joined {group_name}!")
 
@@ -50,11 +56,12 @@ class Group(commands.Cog, name='Group'):
 
         # insert into db
         group_name = ' '.join(lines[0].split(' ')[2:]).strip()
+        hashed = get_hash(f"{ctx.author.id}")
 
         # query
         self.db.delete('group', {
             group_name,
-            f"{ctx.author.id}",
+            f"{hashed}",
         })
 
     @group.command(name="assign")

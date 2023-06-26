@@ -19,9 +19,12 @@ app = FastAPI()
 # Bot
 intents = discord.Intents.default()  # Ask for permission
 # intents.message_content = True
-# intents.members = True
+intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+@app.get("/ping", status_code=200)
+async def ping():
+    return {"Content": "Ping!"}
 
 # Show us your status card
 @bot.command()
@@ -45,13 +48,11 @@ async def on_ready():
 # Just a run
 async def run():
     try:
-        # await bot.add_cog(User(bot))
-        await bot.add_cog(Task(bot))
-        # await bot.add_cog(Track(bot))
-        await bot.add_cog(Group(bot))
+        bot.add_cog(Task(bot))
+        bot.add_cog(Group(bot))
         await bot.start(TOKEN)
     except KeyboardInterrupt:
-        # bot.remove_cog('Group')
+        bot.remove_cog('Group')
         bot.remove_cog('Task')
         await bot.logout()
 
