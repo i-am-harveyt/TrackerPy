@@ -3,14 +3,19 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
-from fastapi import FastAPI  # I just want to use template on deta
+from fastapi import FastAPI
 from cogs.Task import Task
 # from cogs.User import User
 # from cogs.Track import Track
 from cogs.Group import Group
 
+DEBUG = True
+
 # Load parameters
-load_dotenv(".env")
+if DEBUG:
+    load_dotenv(".dev_env")
+else:
+    load_dotenv(".env")
 TOKEN = os.getenv("DC_TOKEN")
 
 
@@ -18,13 +23,16 @@ TOKEN = os.getenv("DC_TOKEN")
 app = FastAPI()
 # Bot
 intents = discord.Intents.default()  # Ask for permission
-# intents.message_content = True
+if DEBUG:
+    intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
+
 
 @app.get("/ping", status_code=200)
 async def ping():
     return {"Content": "Ping!"}
+
 
 # Show us your status card
 @bot.command()
@@ -56,4 +64,18 @@ async def run():
         bot.remove_cog('Task')
         await bot.logout()
 
-asyncio.create_task(run())
+
+async def run_dev():
+    try:
+        await bot.add_cog(Task(bot))
+        await bot.add_cog(Group(bot))
+        await bot.start(TOKEN)
+    except KeyboardInterrupt:
+        bot.remove_cog('Group')
+        bot.remove_cog('Task')
+        await bot.logout()
+
+if DEBUG:
+    asyncio.create_task(run_dev())
+else:
+    asyncio.create_task(run())

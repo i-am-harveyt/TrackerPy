@@ -1,5 +1,7 @@
 from discord.ext import commands
-from core.classes.DB import DataBase
+from supabase import create_client, Client
+from typing import List, Dict
+import os
 import hashlib
 
 
@@ -10,7 +12,9 @@ def get_hash(string: str):
 class Task(commands.Cog, name='Task'):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = DataBase()
+        self.URL = os.getenv("SUPABASE_URL")
+        self.API_KEY = os.getenv("SUPABASE_KEY")
+        self.supabase: Client = create_client(self.URL, self.API_KEY)
 
     @commands.group()
     async def task(self, ctx: commands.Context):
@@ -29,12 +33,17 @@ class Task(commands.Cog, name='Task'):
             return
 
         # insert into db
+        insert_data: List[Dict] = []
+        hashed = get_hash(f'{ctx.author.id}')
         for name in names:
-            hashed = get_hash(f'{ctx.author.id}')
-            self.db.insert('tasks', {
+            insert_data.append({
                 'user_id': f"{hashed}",
-                'task_name': f"{name}",
+                'task_name': f"{name}"
             })
+        self.supabase\
+            .table("tasks")\
+            .insert(insert_data)\
+            .execute()
         await self.display_user(ctx)
 
     @task.command(name="delete")
@@ -49,8 +58,14 @@ class Task(commands.Cog, name='Task'):
             return
 
         # query
+        hashed = get_hash(f'{ctx.author.id}')
         for name in names:
-            self.db.delete('tasks', 'task_name', name)
+            self.supabase.table("tasks").delete()\
+                .match({
+                    'user_id': f"{hashed}",
+                    'task_name': f"{name}"
+                })\
+                .execute()
         await self.display_user(ctx)
 
     @task.command(name="done")
@@ -65,8 +80,15 @@ class Task(commands.Cog, name='Task'):
             return
 
         # query
+        hashed = get_hash(f'{ctx.author.id}')
         for name in names:
-            self.db.update("tasks", name, 'done', True)
+            self.supabase.table("tasks")\
+                .update({'done': True})\
+                .match({
+                    'user_id': f"{hashed}",
+                    'task_name': f"{name}"
+                })\
+                .execute()
         await self.display_user(ctx)
 
     @task.command(name="undone")
@@ -81,12 +103,21 @@ class Task(commands.Cog, name='Task'):
             return
 
         # query
+        hashed = get_hash(f'{ctx.author.id}')
         for name in names:
-            self.db.update("tasks", name, 'done', False)
+            self.supabase.table("tasks")\
+                .update({'done': False})\
+                .match({
+                    'user_id': f"{hashed}",
+                    'task_name': f"{name}"
+                })\
+                .execute()
         await self.display_user(ctx)
 
     @task.command(name="archive")
     async def archive_task(self, ctx: commands.Context):
+        await ctx.send("Revising, not available")
+        return
         # process input
         text = ctx.message.content
         names = text.split('\n')[1:]
@@ -97,26 +128,26 @@ class Task(commands.Cog, name='Task'):
             return
 
         # get task from table: task
-        hashed = get_hash(f'{ctx.author.id}')
-        tasks = self.db.fetch_eq(
-            table='tasks',
-            key='user_id', val=hashed).data
-        for task in tasks:
-            for name in names:
-                if name != task['task_name']:
-                    continue
-                self.db.insert(
-                    table='archived',
-                    data={
-                        'user_id': task['user_id'],
-                        'task_name': task['task_name'],
-                        'done': task['done']
-                    })
-                self.db.delete(
-                    table='tasks',
-                    key='id',
-                    val=task['id']
-                )
+        # hashed = get_hash(f'{ctx.author.id}')
+        # tasks = self.db.fetch_eq(
+        #     table='tasks',
+        #     key='user_id', val=hashed).data
+        # for task in tasks:
+        #     for name in names:
+        #         if name != task['task_name']:
+        #             continue
+        #         self.db.insert(
+        #             table='archived',
+        #             data={
+        #                 'user_id': task['user_id'],
+        #                 'task_name': task['task_name'],
+        #                 'done': task['done']
+        #             })
+        #         self.db.delete(
+        #             table='tasks',
+        #             key='id',
+        #             val=task['id']
+        #         )
         await ctx.send("Archive Complete!")
 
     @task.group(name="display")
@@ -133,7 +164,9 @@ class Task(commands.Cog, name='Task'):
                 continue
             out += f"## {user.name}\n"
             hashed = get_hash(f'{user.id}')
-            res = self.db.fetch_eq(table='tasks', key='user_id', val=hashed)
+            res = self.supabase.table("tasks")\
+                .select('*')\
+                .match({'user_id': hashed}).execute()
             tasks = res.data
             if len(tasks) == 0:
                 out += "Jobs Done! Great Job! :partying_face:\n"
@@ -156,8 +189,11 @@ class Task(commands.Cog, name='Task'):
 
     async def display_user(self, ctx: commands.Context, table: str = 'tasks'):
         hashed = get_hash(f'{ctx.author.id}')
-        res = self.db.fetch_eq(table=table, key='user_id',
-                               val=hashed)
+        res = self.supabase\
+            .table(table)\
+            .select('*')\
+            .match({'user_id': hashed})\
+            .execute()
         tasks = res.data
         if len(tasks) == 0:
             await ctx.send("Jobs Done! Great Job!")
